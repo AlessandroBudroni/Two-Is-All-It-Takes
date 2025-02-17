@@ -175,6 +175,13 @@ def is_monomial(Q):
                 count += 1
         if count != 1:
             return False
+    for j in range(Q.ncols()):
+        count = 0
+        for i in range(Q.nrows()):
+            if Q[i,j] != 0:
+                count += 1
+        if count != 1:
+            return False
     return True
 
 def sample_low_weight(n, q, w):
