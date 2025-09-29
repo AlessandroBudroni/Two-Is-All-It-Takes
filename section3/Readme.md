@@ -1,47 +1,62 @@
 ## Scripts relative to Section 3
+The directory `/nowaskowski` contains two modified python files from [https://github.com/juliannowakowski/lep-cf](https://github.com/juliannowakowski/lep-cf) by Julian Nowakowski.
 _________
-### Plot rank vs n. columns vs n. rows vs expected columns
-The script `get_rank_vs_cols_vs_rows.py` gives the data to produce the plot comparing, for each code rate, the average of the ranks, number of columns, rows, and expected columns of the system before the guessing phase.
+
+### 1. Solve a random LCE instances with two pair of equivalent codewords
+The script `test_solver.py` samples a random LCE instance along with two pair of equivalent codewords, and tries to solve them. The script was used for filling Table 2.
 
 **Usage example**
 ```
-sage -python get_rank_vs_cols_vs_rows.py --n 40 --q 31 --trials 10
+sage -python test_solver.py --n 128 --q 127 --k 64 --n_trials 10 
 ```
-_________
-### Solve a random LCE instance with two pair of equivalent codewords
-The script `solve_random_lce_instance.py` samples a random LCE instance along with two pair of equivalent codewords, and tried to solve it.
-
-**Usage example**
-````
-sage -python solve_random_lce_instance.py --n 40 --q 31 --k 20 
->> Success
-````
-Use `--verbose` to activate the verbosity in stdout and `--parallel` to make guesses in paralell (useful only for large dimensions >= 80).
+Use `--parallel` to solve `n_trials` instances in parallel. NOTE: parallelizing usually affects the average speed of each single instance.
 One can specify the Hamming weight of the equivalent codewords with the command `--w`, otherwise is set by default to the minimum weight of the code.
+Tested for code rates `R \in (0,0.5]`.
 _________
-### Test Heuristic 1
-The script `test_heuristic.py` tries to solve a number of LCE instances + two pairs of equivalent codewords, and returns the success rate.
-Parallelization is enabled by default. 
+
+### 2. Theoretical `q0` for approximate SSP solution for all rates
+The script `theoretical_q0_approximate_ssp.py` computes the constant `q0` from Lemma 2 for all code rates between 0 and 0.5.
+The script was used to generate part of Fig. 1.
 
 **Usage example**
 ```
-sage -python test_heuristic.py --n 40 --k 10 --q 31 --trials 10 --parallel
->> n: 40, k: 20, q: 31, w: 15 - Result: 10/10: 1.0
+python3 theoretical_q0_approximate_ssp.py --n 1000
 ```
-The Hamming weight of the equivalent codewords is set by default to the minimum weight of the code.
-_________
-### Generate success region plot
-The script `get_solver_regions.py` solves LCE instances for a range of `n` and rates in `(0,0.5]` and a specific `q`, and prints the results as:
-- -1 : setting not analyzed
-- 0 : failure
-- 1 : solved
-- 2 : solved without guessing
+---------
+
+### 3. Experimental minimal `q` for exact SSP solution for all rates
+The script `experimental_q0_exact_ssp.py` computes the minimal modulo `q` such that 10/10 random SSP instances as per Algorithm 1 could be solved exactly.
+This script was used to generate part of Fig. 1.
 
 **Usage example**
 ```
-sage -python get_solver_regions.py --min_n 20 --max_n 40 --q 17 --step 2
+sage -python experimental_q0_exact_ssp.py --n 256 --step 1
 ```
-
-Parallelization is enabled by default. The Hamming weight of the equivalent codewords is set by default to the minimum weight of the code.
+For each rate and each `q`, the script considers `w` as the estimated minimum weight of the code.
 _________
-These scripts do not address the code rates `R \in (0.5,1)`. In these cases, one must compute the dual of the codes with rates `1-R` and solve the LCE instance on these.
+
+### 4. Experimental minimal q for exact SSP solution for n as power of q
+The script `estimate_exact_q0_for_2pow.py` computes the minimal modulo `q` such that 10/10 random SSP instances as per Algorithm 1 could be solved exactly.
+This script was used to generate Fig. 2. It is designed to work for power of `n` and the rate is fixed.
+**Usage example**
+```
+sage -python estimate_exact_q0_for_2pow.py --min_n 6 --max_n 10 --rate 0.5
+```
+The above tries for all `n=2^x` for `x=6,7,8,9,10`. Use `--parallel` to enable parallization. 
+
+NOTE: if a `q` is found for `x`, then `x+1` is tested starting from the same `q`. Start from `min_n 6` as for very small values of `n` the behavior is not indicative.
+For large `x` (e.g. `x=18`), it becomes quite slow.
+_________
+
+### 5. Obtainable sums
+The script `obtainable_sums.py` computes all possible obtainable sums from a given input set as in Lemma 2.
+This script was used to generate Fig. 3.
+
+**Usage example**
+```
+python3 obtainable_sums.py --n 128 --q 127 --w 107
+```
+Where the inputs are the code length `n`, the field size `q` and the Hamming weight `w`.
+
+
+
