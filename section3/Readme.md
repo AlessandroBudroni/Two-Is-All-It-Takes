@@ -49,14 +49,10 @@ For large `x` (e.g. `x=18`), it becomes quite slow.
 _________
 
 ### 5. Obtainable sums
-The script `obtainable_sums.py` computes all possible obtainable sums from a given input set as in Lemma 2.
+The notebook `obtainable_sums.ipynb` computes all possible obtainable sums from see input set S.
 This script was used to generate Fig. 3.
 
-**Usage example**
-```
-python3 obtainable_sums.py --n 128 --q 127 --w 107
-```
-Where the inputs are the code length `n`, the field size `q` and the Hamming weight `w`.
+For a detailed description of the dependencies to run jupyter notebooks please see the readme in the `section4 & section5` folder.
 
 
 
